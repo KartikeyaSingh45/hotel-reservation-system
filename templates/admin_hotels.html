@@ -1,0 +1,14 @@
+{% include "navbar.html" %}
+<h2>All Hotels</h2>
+
+{% for hotel in hotels %}
+<div style="border:1px solid black; padding:10px; margin:10px;">
+    
+    <h3>{{ hotel.hotel_name }}</h3>
+    <p>{{ hotel.location }}</p>
+
+    <a href="/delete_hotel/{{ hotel.hotel_id }}">
+        <button>Delete Hotel</button>
+    </a>
+</div>
+{% endfor %}    

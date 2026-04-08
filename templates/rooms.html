@@ -1,0 +1,42 @@
+{% include "navbar.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rooms</title>
+</head>
+<body>
+
+    <h2>Available Rooms</h2>
+
+    {% for room in rooms %}
+        <div style="border:1px solid black; padding:10px; margin:10px;">
+            
+            <h3>{{ room.room_type }}</h3>
+            <p><b>Price:</b> ₹{{ room.price }}</p>
+            <p><b>Status:</b> {{ room.availability }}</p>
+
+            {% if room.availability == 'available' %}
+                {% if session.get('user_id') %}
+                    <a href="/book/{{ room.room_id }}">
+                        <button>Book Now</button>
+                    </a>
+                {% else %}
+                    <!-- redirect back to same hotel after login -->
+                    <a href="/login?next=/rooms/{{ hotel_id }}">
+                        <button>Login to Book</button>
+                    </a>
+                {% endif %}
+            {% else %}
+                <button disabled>Not Available</button>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <br>
+
+    <a href="/view_hotels">
+        <button>Back to Hotels</button>
+    </a>
+
+</body>
+</html>

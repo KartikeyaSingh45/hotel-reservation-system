@@ -1,0 +1,15 @@
+{% include "navbar.html" %}
+<h2>All Bookings</h2>
+
+{% for b in bookings %}
+<div style="border:1px solid black; padding:10px; margin:10px;">
+    <p><b>User:</b> {{ b.user_name }} ({{ b.email }})</p>
+    <p><b>Hotel:</b> {{ b.hotel_name }}</p>
+    <p><b>Room:</b> {{ b.room_type }}</p>
+    <p><b>Status:</b> {{ b.status }}</p>
+
+    <a href="/delete_booking/{{ b.booking_id }}">
+        <button>Delete Booking</button>
+    </a>
+</div>
+{% endfor %}

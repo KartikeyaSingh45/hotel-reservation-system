@@ -1,0 +1,36 @@
+{% include "navbar.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookings</title>
+</head>
+<body>
+
+    <h2>My Bookings</h2>
+
+    {% for booking in bookings %}
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+        
+        <h3>{{ booking.hotel_name }}</h3>
+        <p><b>Room:</b> {{ booking.room_type }}</p>
+        <p><b>Check-in:</b> {{ booking.check_in }}</p>
+        <p><b>Check-out:</b> {{ booking.check_out }}</p>
+        <p><b>Status:</b> {{ booking.status }}</p>
+
+        {% if booking.status != 'cancelled' %}
+            <a href="/cancel_booking/{{ booking.booking_id }}">
+                <button>Cancel Booking</button>
+            </a>
+        {% else %}
+            <button disabled>Cancelled</button>
+        {% endif %}
+    </div>
+{% endfor %}
+
+    <br>
+    <a href="/dashboard">
+        <button>Back</button>
+    </a>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% include "navbar.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel System</title>
+</head>
+<body>
+
+    <!-- Top Right Menu -->
+    <div style="position:absolute; top:10px; right:10px;">
+        
+        <select onchange="handleMenu(this.value)">
+            <option>Menu</option>
+            <option value="/about">About</option>
+            <option value="/help">Help</option>
+            <option value="/contact">Contact Us</option>
+            <option value="/admin_login">Admin Login</option>
+        </select>
+    </div>
+
+    <h1>Welcome to Hotel Reservation System</h1>
+
+    <br><br>
+
+    <a href="/view_hotels">
+        <button>View Hotels</button>
+    </a>
+
+    <a href="/login?next=dashboard">
+        <button>Book Hotel</button>
+    </a>
+
+    <script>
+        function handleMenu(value) {
+            if (value !== "Menu") {
+                window.location.href = value;
+            }
+        }
+    </script>
+
+</body>
+</html>

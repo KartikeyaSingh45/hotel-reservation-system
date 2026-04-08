@@ -1,0 +1,28 @@
+{% include "navbar.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+    <h2>Login</h2>
+
+    <form method="POST">
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button type="submit">Login</button>
+    </form>
+
+    <br>
+
+    <!-- SIGN UP OPTION -->
+    <p>Don't have an account?</p>
+    <a href="/register">
+        <button>Sign Up</button>
+    </a>
+
+</body>
+</html>

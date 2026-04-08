@@ -1,0 +1,35 @@
+{% include "navbar.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome {{ name }} 👋</h1>
+
+    <h2>Available Hotels</h2>
+
+    {% for hotel in hotels %}
+        <div style="border:1px solid black; padding:10px; margin:10px;">
+            
+            <h3>{{ hotel.hotel_name }}</h3>
+            <p><b>Location:</b> {{ hotel.location }}</p>
+            <p>{{ hotel.description }}</p>
+
+            <a href="/rooms/{{ hotel.hotel_id }}">
+                <button>View Rooms</button>
+            </a>
+        </div>
+    {% endfor %}
+
+    <br>
+
+    <a href="/my_bookings">
+        <button>My Bookings</button>
+    </a>
+
+    <a href="/logout">
+        <button>Logout</button>
+    </a>
+</body>
+</html>

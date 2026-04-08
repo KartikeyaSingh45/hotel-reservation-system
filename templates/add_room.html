@@ -1,0 +1,15 @@
+{% include "navbar.html" %}
+<h2>Add Room</h2>
+
+<form method="POST">
+    <input type="text" name="room_type" placeholder="Room Type" required><br><br>
+    <input type="number" name="price" placeholder="Price" required><br><br>
+
+    <select name="hotel_id">
+        {% for hotel in hotels %}
+            <option value="{{ hotel.hotel_id }}">{{ hotel.hotel_name }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Add Room</button>
+</form>
