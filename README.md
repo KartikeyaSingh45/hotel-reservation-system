@@ -51,7 +51,7 @@ hotel-reservation-system/
 
 ### 1️⃣ Clone the Repository
 
-```bash
+
 git clone https://github.com/YOUR_USERNAME/hotel-reservation-system.git
 cd hotel-reservation-system
 
