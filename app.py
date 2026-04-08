@@ -12,7 +12,7 @@ def get_db():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="09082007@a",
+        password="Write your password here dumbass",
         database="hotel_reservation"
     )
 
