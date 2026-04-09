@@ -1,42 +1,54 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rooms</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Rooms — {{ hotel_name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ hotel_name }}</h1>
+    <p>Available rooms at this hotel.</p>
+</div>
 
-    <h2>Available Rooms</h2>
-
+{% if rooms %}
+<div class="card-grid">
     {% for room in rooms %}
-        <div style="border:1px solid black; padding:10px; margin:10px;">
-            
-            <h3>{{ room.room_type }}</h3>
-            <p><b>Price:</b> ₹{{ room.price }}</p>
-            <p><b>Status:</b> {{ room.availability }}</p>
-
+    <div class="card">
+        <div class="card-header">
+            <h3>🛏️ {{ room.room_type }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="card-price">₹{{ room.price }}</div>
+            <p style="margin-top:0.5rem">
+                <b>Status:</b>
+                {% if room.availability == 'available' %}
+                    <span class="badge badge-success">Available</span>
+                {% else %}
+                    <span class="badge badge-danger">Booked</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-footer">
             {% if room.availability == 'available' %}
                 {% if session.get('user_id') %}
-                    <a href="/book/{{ room.room_id }}">
-                        <button>Book Now</button>
+                    <a href="/book/{{ room.room_id }}" class="btn btn-accent"
+                       onclick="return confirm('Confirm booking for {{ room.room_type }} at ₹{{ room.price }}?')">
+                       Book Now
                     </a>
                 {% else %}
-                    <!-- redirect back to same hotel after login -->
-                    <a href="/login?next=/rooms/{{ hotel_id }}">
-                        <button>Login to Book</button>
-                    </a>
+                    <a href="/login" class="btn btn-primary">Login to Book</a>
                 {% endif %}
             {% else %}
-                <button disabled>Not Available</button>
+                <span class="btn btn-disabled">Not Available</span>
             {% endif %}
         </div>
+    </div>
     {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🛏️</div>
+    <p>No rooms listed for this hotel yet.</p>
+</div>
+{% endif %}
 
-    <br>
-
-    <a href="/view_hotels">
-        <button>Back to Hotels</button>
-    </a>
-
-</body>
-</html>
+<div style="margin-top:2rem">
+    <a href="/view_hotels" class="btn btn-outline">← Back to Hotels</a>
+</div>
+{% endblock %}

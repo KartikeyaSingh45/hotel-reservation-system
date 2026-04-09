@@ -1,28 +1,21 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-
-    <h2>Login</h2>
-
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="form-container">
+    <h2>Welcome Back</h2>
     <form method="POST">
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
-        <input type="hidden" name="next" value="{{ next }}">
-
-        <button type="submit">Login</button>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Login</button>
     </form>
-
-    <br>
-
-    <!-- SIGN UP OPTION -->
-    <p>Don't have an account?</p>
-    <a href="/register">
-        <button>Sign Up</button>
-    </a>
-
-</body>
-</html>
+    <div class="form-footer">
+        <p>Don't have an account? <a href="/register">Sign Up</a></p>
+    </div>
+</div>
+{% endblock %}

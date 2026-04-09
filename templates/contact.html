@@ -1,21 +1,20 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Contact Us - Hotel Reservation System</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<div class="info-page">
+    <h1>Contact Us</h1>
+    <p>Have questions or need assistance? We'd love to hear from you!</p>
 
-    <h2>Contact Us</h2>
+    <h3>📧 Email</h3>
+    <p>support@hotelhub.com</p>
 
-    <p>Have questions or need assistance? Reach out to us!</p>
+    <h3>📞 Phone</h3>
+    <p>+91-9876543210</p>
 
-    <p><b>Email:</b> support@hotel.com</p>
-    <p><b>Phone:</b> +91-9876543210</p>
-    <p><b>Address:</b> 123 Hotel Lane, New Delhi, India</p>
+    <h3>📍 Address</h3>
+    <p>123 Hotel Lane, New Delhi, India</p>
 
-    <br>
-    <a href="/"><button>Back to Home</button></a>
-
-</body>
-</html>
+    <h3>🕐 Hours</h3>
+    <p>Monday — Saturday: 9:00 AM — 6:00 PM<br>Sunday: Closed</p>
+</div>
+{% endblock %}

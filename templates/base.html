@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HotelHub{% endblock %} — Hotel Reservation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">🏨 HotelHub</a>
+            <div class="nav-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin_dashboard" class="nav-link">Dashboard</a>
+                    <a href="/admin_bookings" class="nav-link">Bookings</a>
+                    <a href="/admin_hotels" class="nav-link">Hotels</a>
+                    <a href="/add_hotel" class="nav-link">Add Hotel</a>
+                    <a href="/add_room" class="nav-link">Add Room</a>
+                {% elif session.get('user_id') %}
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                    <a href="/my_bookings" class="nav-link">My Bookings</a>
+                    <a href="/view_hotels" class="nav-link">Browse Hotels</a>
+                {% else %}
+                    <a href="/view_hotels" class="nav-link">Hotels</a>
+                    <a href="/about" class="nav-link">About</a>
+                    <a href="/help" class="nav-link">Help</a>
+                    <a href="/contact" class="nav-link">Contact</a>
+                {% endif %}
+            </div>
+            <div class="nav-auth">
+                {% if user %}
+                    <span class="nav-user">👋 {{ user }}</span>
+                    <a href="/logout" class="btn btn-outline btn-sm">Logout</a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline btn-sm">Login</a>
+                    <a href="/register" class="btn btn-primary btn-sm">Sign Up</a>
+                {% endif %}
+            </div>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active');document.querySelector('.nav-auth').classList.toggle('active')">☰</button>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">
+                        {{ message }}
+                        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🏨 HotelHub</h4>
+                <p>Your trusted partner for hotel reservations across India.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/view_hotels">Browse Hotels</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📧 support@hotelhub.com</p>
+                <p>📞 +91-9876543210</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HotelHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-20px)';
+                setTimeout(() => el.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

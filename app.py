@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 import mysql.connector
 from flask_bcrypt import Bcrypt
 
@@ -8,10 +8,16 @@ app.config["SESSION_PERMANENT"] = False
 
 bcrypt = Bcrypt(app)
 
-# Make 'user' available in all templates for the navbar
 @app.context_processor
 def inject_user():
     return dict(user=session.get("user_name"))
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 # -------------------------
 # DATABASE CONNECTION
@@ -20,7 +26,7 @@ def get_db():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="09082007@a",   # 🔥 PUT YOUR MYSQL PASSWORD
+        password="09082007@a",
         database="hotel_reservation"
     )
 
@@ -46,16 +52,20 @@ def register():
         db = get_db()
         cursor = db.cursor()
 
-        cursor.execute(
-            "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
-            (name, email, hashed)
-        )
-
-        db.commit()
-        cursor.close()
-        db.close()
-
-        return redirect("/login")
+        try:
+            cursor.execute(
+                "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
+                (name, email, hashed)
+            )
+            db.commit()
+            flash("Account created successfully! Please login.", "success")
+            return redirect("/login")
+        except mysql.connector.IntegrityError:
+            flash("Email already registered. Please login.", "warning")
+            return redirect("/login")
+        finally:
+            cursor.close()
+            db.close()
 
     return render_template("register.html")
 
@@ -82,12 +92,15 @@ def login():
             session["user_name"] = user["name"]
             session["role"] = user["role"]
 
+            flash(f"Welcome back, {user['name']}!", "success")
+
             if user["role"] == "admin":
                 return redirect("/admin_dashboard")
             else:
                 return redirect("/dashboard")
 
-        return "Invalid login ❌"
+        flash("Invalid email or password.", "danger")
+        return redirect("/login")
 
     return render_template("login.html")
 
@@ -97,6 +110,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
+    flash("You have been logged out.", "info")
     return redirect("/login")
 
 # -------------------------
@@ -145,10 +159,14 @@ def rooms(hotel_id):
     cursor.execute("SELECT * FROM rooms WHERE hotel_id=%s", (hotel_id,))
     rooms = cursor.fetchall()
 
+    cursor.execute("SELECT hotel_name FROM hotels WHERE hotel_id=%s", (hotel_id,))
+    hotel = cursor.fetchone()
+
     cursor.close()
     db.close()
 
-    return render_template("rooms.html", rooms=rooms, hotel_id=hotel_id)
+    return render_template("rooms.html", rooms=rooms, hotel_id=hotel_id,
+                         hotel_name=hotel["hotel_name"] if hotel else "Hotel")
 
 # -------------------------
 # BOOK ROOM
@@ -172,7 +190,8 @@ def book(room_id):
     cursor.close()
     db.close()
 
-    return redirect("/dashboard")
+    flash("Room booked successfully! 🎉", "success")
+    return redirect("/my_bookings")
 
 # -------------------------
 # MY BOOKINGS
@@ -212,12 +231,16 @@ def cancel_booking(booking_id):
     cursor = db.cursor()
 
     cursor.execute("SELECT room_id FROM bookings WHERE booking_id=%s", (booking_id,))
-    room_id = cursor.fetchone()[0]
+    room = cursor.fetchone()
 
-    cursor.execute("DELETE FROM bookings WHERE booking_id=%s", (booking_id,))
-    cursor.execute("UPDATE rooms SET availability='available' WHERE room_id=%s", (room_id,))
+    if room:
+        cursor.execute("DELETE FROM bookings WHERE booking_id=%s", (booking_id,))
+        cursor.execute("UPDATE rooms SET availability='available' WHERE room_id=%s", (room[0],))
+        db.commit()
+        flash("Booking cancelled successfully.", "info")
+    else:
+        flash("Booking not found.", "danger")
 
-    db.commit()
     cursor.close()
     db.close()
 
@@ -231,7 +254,30 @@ def admin_dashboard():
     if session.get("role") != "admin":
         return redirect("/login")
 
-    return render_template("admin_dashboard.html", name=session.get("user_name"))
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS count FROM hotels")
+    hotel_count = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) AS count FROM rooms")
+    room_count = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) AS count FROM bookings")
+    booking_count = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) AS count FROM users WHERE role='customer'")
+    user_count = cursor.fetchone()["count"]
+
+    cursor.close()
+    db.close()
+
+    return render_template("admin_dashboard.html",
+                         name=session.get("user_name"),
+                         hotel_count=hotel_count,
+                         room_count=room_count,
+                         booking_count=booking_count,
+                         user_count=user_count)
 
 # -------------------------
 # ADMIN VIEW BOOKINGS
@@ -246,7 +292,7 @@ def admin_bookings():
 
     cursor.execute("""
         SELECT b.booking_id, u.name AS user_name, u.email,
-               r.room_type, h.hotel_name, b.status
+               r.room_type, h.hotel_name, b.status, b.check_in, b.check_out
         FROM bookings b
         JOIN users u ON b.user_id=u.user_id
         JOIN rooms r ON b.room_id=r.room_id
@@ -296,6 +342,7 @@ def delete_hotel(hotel_id):
     cursor.close()
     db.close()
 
+    flash("Hotel deleted successfully.", "info")
     return redirect("/admin_hotels")
 
 # -------------------------
@@ -320,7 +367,8 @@ def add_hotel():
         cursor.close()
         db.close()
 
-        return redirect("/admin_dashboard")
+        flash("Hotel added successfully! 🏨", "success")
+        return redirect("/admin_hotels")
 
     return render_template("add_hotel.html")
 
@@ -349,7 +397,8 @@ def add_room():
         cursor.close()
         db.close()
 
-        return redirect("/admin_dashboard")
+        flash("Room added successfully! 🛏️", "success")
+        return redirect("/admin_hotels")
 
     cursor.execute("SELECT * FROM hotels")
     hotels = cursor.fetchall()
@@ -380,6 +429,7 @@ def delete_booking(booking_id):
     cursor.close()
     db.close()
 
+    flash("Booking deleted.", "info")
     return redirect("/admin_bookings")
 
 # -------------------------
@@ -402,6 +452,13 @@ def help_page():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+# -------------------------
+# ERROR HANDLERS
+# -------------------------
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 # -------------------------
 if __name__ == "__main__":

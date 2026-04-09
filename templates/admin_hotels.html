@@ -1,14 +1,44 @@
-{% include "navbar.html" %}
-<h2>All Hotels</h2>
-
-{% for hotel in hotels %}
-<div style="border:1px solid black; padding:10px; margin:10px;">
-    
-    <h3>{{ hotel.hotel_name }}</h3>
-    <p>{{ hotel.location }}</p>
-
-    <a href="/delete_hotel/{{ hotel.hotel_id }}">
-        <button>Delete Hotel</button>
-    </a>
+{% extends "base.html" %}
+{% block title %}Manage Hotels{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Manage Hotels</h1>
+    <p>View and manage all hotels in the system.</p>
 </div>
-{% endfor %}    
+
+<div style="margin-bottom:1.5rem">
+    <a href="/add_hotel" class="btn btn-accent">+ Add New Hotel</a>
+    <a href="/add_room" class="btn btn-primary">+ Add Room</a>
+</div>
+
+{% if hotels %}
+<div class="card-grid">
+    {% for hotel in hotels %}
+    <div class="card">
+        <div class="card-header">
+            <h3>🏨 {{ hotel.hotel_name }}</h3>
+        </div>
+        <div class="card-body">
+            <p><b>📍 Location:</b> {{ hotel.location }}</p>
+            {% if hotel.description %}
+            <p>{{ hotel.description }}</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="/rooms/{{ hotel.hotel_id }}" class="btn btn-primary btn-sm">View Rooms</a>
+            <a href="/delete_hotel/{{ hotel.hotel_id }}" class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete {{ hotel.hotel_name }}? This will also delete all its rooms and bookings.')">
+               Delete
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🏨</div>
+    <p>No hotels added yet.</p>
+    <a href="/add_hotel" class="btn btn-accent">Add Your First Hotel</a>
+</div>
+{% endif %}
+{% endblock %}

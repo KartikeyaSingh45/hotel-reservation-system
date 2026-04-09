@@ -1,36 +1,50 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Bookings</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>My Bookings</h1>
+    <p>Manage your hotel reservations.</p>
+</div>
 
-    <h2>My Bookings</h2>
-
+{% if bookings %}
+<div class="card-grid">
     {% for booking in bookings %}
-    <div style="border:1px solid black; padding:10px; margin:10px;">
-        
-        <h3>{{ booking.hotel_name }}</h3>
-        <p><b>Room:</b> {{ booking.room_type }}</p>
-        <p><b>Check-in:</b> {{ booking.check_in }}</p>
-        <p><b>Check-out:</b> {{ booking.check_out }}</p>
-        <p><b>Status:</b> {{ booking.status }}</p>
-
-        {% if booking.status != 'cancelled' %}
-            <a href="/cancel_booking/{{ booking.booking_id }}">
-                <button>Cancel Booking</button>
-            </a>
-        {% else %}
-            <button disabled>Cancelled</button>
-        {% endif %}
+    <div class="card">
+        <div class="card-header">
+            <h3>🏨 {{ booking.hotel_name }}</h3>
+        </div>
+        <div class="card-body">
+            <p><b>Room:</b> {{ booking.room_type }}</p>
+            <p><b>Check-in:</b> {{ booking.check_in }}</p>
+            <p><b>Check-out:</b> {{ booking.check_out }}</p>
+            <p><b>Status:</b>
+                {% if booking.status == 'confirmed' %}
+                    <span class="badge badge-success">Confirmed</span>
+                {% elif booking.status == 'cancelled' %}
+                    <span class="badge badge-danger">Cancelled</span>
+                {% else %}
+                    <span class="badge badge-warning">{{ booking.status }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-footer">
+            {% if booking.status == 'confirmed' %}
+                <a href="/cancel_booking/{{ booking.booking_id }}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to cancel this booking?')">
+                   Cancel Booking
+                </a>
+            {% else %}
+                <span class="btn btn-disabled btn-sm">Cancelled</span>
+            {% endif %}
+        </div>
     </div>
-{% endfor %}
-
-    <br>
-    <a href="/dashboard">
-        <button>Back</button>
-    </a>
-
-</body>
-</html>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <p>You don't have any bookings yet.</p>
+    <a href="/dashboard" class="btn btn-primary">Browse Hotels</a>
+</div>
+{% endif %}
+{% endblock %}

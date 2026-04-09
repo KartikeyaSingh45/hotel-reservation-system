@@ -1,34 +1,52 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Admin Panel</h1>
+    <p>Welcome, {{ name }}. Manage your hotel system from here.</p>
+</div>
 
-<h1>Welcome Admin {{ name }} </h1>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏨</div>
+        <div class="stat-number">{{ hotel_count }}</div>
+        <div class="stat-label">Hotels</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🛏️</div>
+        <div class="stat-number">{{ room_count }}</div>
+        <div class="stat-label">Rooms</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-number">{{ booking_count }}</div>
+        <div class="stat-label">Bookings</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-number">{{ user_count }}</div>
+        <div class="stat-label">Users</div>
+    </div>
+</div>
 
-<a href="/add_hotel">
-    <button>Add Hotel</button>
-</a>
-
-<a href="/add_room">
-    <button>Add Room</button>
-</a>
-
-<br><br>
-
-<a href="/logout">
-    <button>Logout</button>
-</a>
-
-<a href="/admin_bookings">
-    <button>View Bookings</button>
-</a>
-
-<a href="/admin_hotels">
-    <button>Manage Hotels</button>
-</a>
-
-</body>
-</html>
+<div class="card-grid">
+    <div class="card">
+        <div class="card-header"><h3>📋 Manage Bookings</h3></div>
+        <div class="card-body"><p>View and manage all customer bookings.</p></div>
+        <div class="card-footer"><a href="/admin_bookings" class="btn btn-primary">View Bookings</a></div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>🏨 Manage Hotels</h3></div>
+        <div class="card-body"><p>View, add, or remove hotels from the system.</p></div>
+        <div class="card-footer">
+            <a href="/admin_hotels" class="btn btn-primary">View Hotels</a>
+            <a href="/add_hotel" class="btn btn-accent">Add Hotel</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>🛏️ Manage Rooms</h3></div>
+        <div class="card-body"><p>Add new rooms to your hotels.</p></div>
+        <div class="card-footer"><a href="/add_room" class="btn btn-accent">Add Room</a></div>
+    </div>
+</div>
+{% endblock %}

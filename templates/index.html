@@ -1,42 +1,37 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hotel System</title>
-</head>
-<body>
-
-    <!-- Top Right Menu -->
-    <div style="position:absolute; top:10px; right:10px;">
-        
-        <select onchange="handleMenu(this.value)">
-            <option>Menu</option>
-            <option value="/about">About</option>
-            <option value="/help">Help</option>
-            <option value="/contact">Contact Us</option>
-            <option value="/login">Admin Login</option>
-        </select>
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>Find Your Perfect Stay</h1>
+        <p>Discover top-rated hotels across India. Book luxury rooms at the best prices with just a few clicks.</p>
+        <div class="hero-actions">
+            <a href="/view_hotels" class="btn btn-accent btn-lg">🏨 Browse Hotels</a>
+            <a href="/register" class="btn btn-primary btn-lg">✨ Get Started</a>
+        </div>
     </div>
+</div>
 
-    <h1>Welcome to Hotel Reservation System</h1>
-
-    <br><br>
-
-    <a href="/view_hotels">
-        <button>View Hotels</button>
-    </a>
-
-    <a href="/login?next=dashboard">
-        <button>Book Hotel</button>
-    </a>
-
-    <script>
-        function handleMenu(value) {
-            if (value !== "Menu") {
-                window.location.href = value;
-            }
-        }
-    </script>
-
-</body>
-</html>
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Search Hotels</h3>
+        <p>Browse our curated collection of hotels across multiple cities and find the perfect match.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Booking</h3>
+        <p>Book your room instantly with our seamless one-click reservation system.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Secure & Reliable</h3>
+        <p>Your bookings are safe with us. Cancel anytime with full flexibility.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h3>Best Prices</h3>
+        <p>Get premium rooms at competitive prices. No hidden fees, no surprises.</p>
+    </div>
+</div>
+{% endblock %}

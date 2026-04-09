@@ -1,27 +1,21 @@
-{% include "navbar.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About - Hotel Reservation System</title>
-</head>
-<body>
-
-    <h2>About Us</h2>
-
-    <p>Welcome to the <b>Hotel Reservation System</b> — your one-stop solution for browsing and booking hotels across India.</p>
-
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+{% block content %}
+<div class="info-page">
+    <h1>About HotelHub</h1>
+    <p>Welcome to <b>HotelHub</b> — your one-stop solution for browsing and booking hotels across India.</p>
     <p>We offer a wide range of hotels from budget-friendly to luxury stays. Our platform makes it easy to find, compare, and book rooms in just a few clicks.</p>
 
-    <h3>Features</h3>
-    <ul>
-        <li>Browse hotels and rooms</li>
-        <li>Book rooms instantly</li>
-        <li>Manage your bookings</li>
-        <li>Admin panel for hotel management</li>
-    </ul>
+    <h3>🔍 Search Hotels</h3>
+    <p>Browse our curated collection of hotels across multiple cities.</p>
 
-    <br>
-    <a href="/"><button>Back to Home</button></a>
+    <h3>⚡ Instant Booking</h3>
+    <p>Reserve your room instantly with our seamless one-click system.</p>
 
-</body>
-</html>
+    <h3>🛡️ Easy Cancellation</h3>
+    <p>Changed your plans? Cancel your booking anytime with full flexibility.</p>
+
+    <h3>🔐 Admin Panel</h3>
+    <p>Powerful management tools for hotel administrators to manage properties, rooms, and bookings.</p>
+</div>
+{% endblock %}
